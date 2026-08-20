@@ -8,6 +8,7 @@ import { onMounted, ref, watch } from 'vue'
 
 import { ApiService } from '@/service/ApiService'
 import type { SensorReadingOut } from '@/types/api'
+import { formatValue } from '@/utils/format'
 
 const deviceOptions = ref<string[]>([])
 const selectedDevice = ref<string | null>(null)
@@ -63,7 +64,9 @@ watch(dateRange, (val) => {
         <template #body="{ data }">{{ new Date(data.reading_ts).toLocaleString() }}</template>
       </Column>
       <Column field="metric_type" header="Metric" />
-      <Column field="value" header="Value" />
+      <Column header="Value">
+        <template #body="{ data }">{{ formatValue(data.value) }}</template>
+      </Column>
       <Column field="unit" header="Unit" />
       <Column header="Anomaly">
         <template #body="{ data }">

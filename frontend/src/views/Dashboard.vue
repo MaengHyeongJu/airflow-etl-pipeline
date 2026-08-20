@@ -10,6 +10,7 @@ import LogSeverityChart from '@/components/LogSeverityChart.vue'
 import SensorTimeSeriesChart from '@/components/SensorTimeSeriesChart.vue'
 import { ApiService } from '@/service/ApiService'
 import type { KpiSummary, LogLevelSummary, SensorReadingOut, SensorTimeseriesPoint } from '@/types/api'
+import { formatValue } from '@/utils/format'
 
 const kpis = ref<KpiSummary | null>(null)
 const timeseries = ref<SensorTimeseriesPoint[]>([])
@@ -98,7 +99,9 @@ const anomalyRateDisplay = computed(() =>
       <DataTable :value="anomalies" :loading="loading" :rows="10" paginator responsiveLayout="scroll">
         <Column field="device_id" header="Device" sortable />
         <Column field="metric_type" header="Metric" />
-        <Column field="value" header="Value" />
+        <Column header="Value">
+          <template #body="{ data }">{{ formatValue(data.value) }}</template>
+        </Column>
         <Column field="unit" header="Unit" />
         <Column header="Time">
           <template #body="{ data }">{{ new Date(data.reading_ts).toLocaleString() }}</template>

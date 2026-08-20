@@ -4,6 +4,7 @@ import DataTable from 'primevue/datatable'
 import Tag from 'primevue/tag'
 
 import type { DeviceOut } from '@/types/api'
+import { formatValue } from '@/utils/format'
 
 defineProps<{
   devices: DeviceOut[]
@@ -31,7 +32,7 @@ function formatTs(ts: string | null): string {
     <Column field="location" header="Location" />
     <Column header="Latest reading">
       <template #body="{ data }">
-        <span v-if="data.latest_value !== null">{{ data.latest_value }} {{ data.unit }}</span>
+        <span v-if="data.latest_value !== null">{{ formatValue(data.latest_value) }} {{ data.unit }}</span>
         <span v-else class="text-muted">no readings yet</span>
       </template>
     </Column>
