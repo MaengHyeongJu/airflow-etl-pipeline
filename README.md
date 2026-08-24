@@ -55,6 +55,24 @@ open http://localhost:8000/docs  # API 문서
 - `postgres/init/` — `airflow`/`datamart` DB 및 스키마/롤 생성 스크립트
 - `backend/` — FastAPI (읽기 전용, `dashboard_reader` 롤로 접속)
 - `frontend/` — Vue 3 + TS + PrimeVue 대시보드
+- `library_scanner/` — 성남도서관 신착도서 스캐너 (아래 별도 섹션 참고)
+
+## 두 번째 DAG: 성남도서관 신착 SF/추리 스캐너 (`library_new_arrivals_scan`)
+
+성남 해오름도서관 신착도서(문학/최근 3개월/일반도서) 중 **대출가능한 SF·추리소설**만 매일 찾아주는 개인용 DAG.
+
+```
+scrape_and_stage (snlib.go.kr 스크래핑)
+    -> load_raw (Postgres library.new_arrival_scan, 일자 파티션 덮어쓰기)
+    -> classify_and_load (알라딘 ISBN 조회 -> categoryName으로 SF/추리 판별 -> library.genre_matches)
+    -> write_report (data/reports/library/{ds}.txt, latest.txt)
+```
+
+- **장르 판별은 알라딘(Aladin) Open API 기준.** 네이버 책검색 API는 2026-07-31 완전 종료(대체 없음), 카카오 책검색은 12월부로 category 필드가 삭제될 예정이라 둘 다 배제하고 알라딘 하나로 감. `ALADIN_TTBKEY`를 `.env`에 채워야 이 단계가 동작하고, 없으면 skip 상태로 남는다. (발급: 알라딘 가입 → 나의계정 > TTB/API 신청, 승인 1~2일)
+- **결과 확인 방법 두 가지**: ① Airflow UI에서 `classify_and_load` 태스크 로그 → 매칭된 책이 한 줄씩 남음 ② `data/reports/library/latest.txt` — 날짜 몰라도 바로 열어보는 최신 결과 텍스트 파일
+- **아동/유아 도서 제외**는 `searchBookClass=GENERAL`로 서버 사이드에서 처리(청구기호 "아"/"유"/"J" 접두어 전부 제외), 소설이 아닌 문학(수필/시/희곡 등)은 청구기호 `8_3` 패턴으로 걸러서 알라딘 API 호출을 줄임.
+- **`robots.txt`가 사이트 전체를 `Disallow: /`로 막아둠.** 그래서 하루 한 번(스케줄)만 돌고, 페이지 요청 사이 딜레이(1.5초)를 두는 등 저빈도로만 접근하도록 만들어져 있음 — 개인 열람 목적 외 용도로 딜레이를 낮추거나 병렬화하지 말 것.
+- 독립 실행/테스트: `python -m library_scanner.cli --library MH --kdc 8 --period 3M --classify` (13개 유닛테스트는 `cd library_scanner && python3 -m pytest`)
 
 ## 알려진 환경 이슈 (Docker Desktop + WSL2)
 

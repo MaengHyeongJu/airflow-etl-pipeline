@@ -14,3 +14,7 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 # Make the standalone `generator` package importable from the DAG/tasks
 COPY --chown=airflow:root generator /opt/airflow/generator
 RUN pip install --no-cache-dir -e /opt/airflow/generator
+
+# Make the standalone `library_scanner` package importable from the DAG/tasks
+COPY --chown=airflow:root library_scanner /opt/airflow/library_scanner
+RUN pip install --no-cache-dir -e /opt/airflow/library_scanner

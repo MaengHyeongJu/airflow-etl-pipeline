@@ -1,0 +1,5812 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+<meta name="author" content="성남시도서관사업소">
+<meta name="description" content="성남시도서관사업소 정보 및 도서검색 제공">
+<meta name="generator" content="jnet co. ltd.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="성남시도서관사업소">
+<meta property="og:description" content="성남시도서관사업소 정보 및 도서검색 제공">
+<meta property="og:image" content="/include/image/common/ico_sns_favicon.png">
+<meta property="og:url" content="https://www.snlib.go.kr/intro/index.do">
+<title>성남시도서관사업소</title>
+<link rel="shortcut icon" href="/include/image/common/ico_sns_favicon.png">
+<link rel="stylesheet" type="text/css" href="/include/css/intro/sub.css?ver=20260130">
+<link rel="stylesheet" type="text/css" href="/include/css/common/layoutCommon.css">
+<link rel="stylesheet" type="text/css" href="/include/css/common/custom.css?ver=231012">
+<link rel="stylesheet" type="text/css" href="/include/js/jquery-ui.min.css">
+
+<script type="text/javascript" src="/include/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/include/js/jquery.slider.js"></script>
+<script type="text/javascript" src="/include/js/jquery.tab.js"></script>
+<script type="text/javascript" src="/include/js/jquery-ui.js"></script>
+<script type="text/javascript" src="/include/js/jquery-ui.datepicker.js"></script>
+<script type="text/javascript" src="/include/js/jquery.newsticker.js"></script>
+<script type="text/javascript" src="/include/js/moment.min.js"></script>
+<script type="text/javascript" src="/include/js/moment-ko.js"></script>
+<script type="text/javascript" src="/include/js/jQuery.stringify.js"></script>
+<script type="text/javascript" src="/include/js/gnb.js"></script>
+<script type="text/javascript" src="/include/js/common.js"></script>
+
+
+	
+			<script type="text/javascript">
+				$(function(){
+					eval("initMenu(1,3,0,0,0)");
+				});
+			</script>
+		
+
+<script type="text/javascript">
+var siteCd = "intro";
+</script>
+
+<link rel="stylesheet" type="text/css" href="/include/booksearch/css/search.css" />
+<script type="text/javascript" src="/include/booksearch/js/jquery-ui-draggable.min.js"></script>
+<script type="text/javascript" src="/include/booksearch/js/kolaseek.js"></script>
+<script type="text/javascript" src="/include/booksearch/js/imagesloaded.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$("#searchBtn").click(fnSearch);
+		$("#sortBtn").click(fnSort);
+		$("#imageViewBtn").click(fnImageView);
+		$("#textViewBtn").click(fnTextView);
+		$("#searchLibrary").change(fnSearchLibraryChange);
+		$("#searchRoom").change(fnSearchRoomChange);
+		$("#addBasketBatchBtn").click(fnAddBasketBatchProc);
+		$("#exportTextBookBtn").click(fnExportTextBook);
+		$("#exportExcelBookBtn").click(fnExportExcelBook);
+		$("#bookClassBtn").click(fnSearchBookClass);
+		$("#checkAll").click(fnCheckAll);
+		if("IMAGE" == "IMAGE"){
+			$(".bookCoverImg").fnCheckImageLoad();
+		}
+	});
+	function fnSearchBookClass(){
+		var form = document.paramForm;
+		form.currentPageNo.value = 1;
+		if($("#searchForm input[name=searchBookClass]:checked").size() == 0){
+			alert("도서분류를 선택하세요.");
+			return false;
+		}
+		form.searchBookClass.value = $("#searchForm input[name=searchBookClass]:checked").val();
+	    form.action = "/intro/menu/10037/program/30005/plusSearchNewList.do";
+		form.submit();
+	    return false;
+	}
+	function fnSearch(){
+		var form = document.searchForm;
+		if(isEmpty(form.searchPeriod.value)){
+			alert("기간을 선택하세요.");
+			return false;
+		}
+		form.action="/intro/menu/10037/program/30005/plusSearchNewList.do";
+		form.submit();
+		return false;
+	}
+
+	function fnSearchCategory(searchCategory){
+		var form = document.paramForm;
+		form.currentPageNo.value = 1;
+		form.searchCategory.value = searchCategory;
+		form.action = "/intro/menu/10037/program/30005/plusSearchNewList.do";
+		form.submit();
+	}
+
+	function fnSort(){
+		var form = document.paramForm;
+		form.currentPageNo.value = 1;
+		form.searchSort.value = document.searchForm.searchSort.value;
+		form.searchOrder.value = document.searchForm.searchOrder.value;
+		form.searchRecordCount.value = document.searchForm.searchRecordCount.value
+		form.action = "/intro/menu/10037/program/30005/plusSearchNewList.do";
+		form.submit();
+		return false;
+	}
+
+	function fnImageView(){
+		var form = document.paramForm;
+		form.viewStatus.value = "IMAGE";
+		form.action="/intro/menu/10037/program/30005/plusSearchNewList.do";
+		form.submit();
+		return false;
+	}
+
+	function fnTextView(){
+		var form = document.paramForm;
+		form.viewStatus.value = "TEXT";
+		form.action="/intro/menu/10037/program/30005/plusSearchNewList.do";
+		form.submit();
+		return false;
+	}
+
+	function fnSearchLibraryChange(){
+		var form = document.searchForm;
+		form.searchRoom.value = "ALL";
+	}
+
+	function fnSearchRoomChange(){
+		var form = document.searchForm;
+		form.searchLibrary.value = "ALL";
+	}
+
+	function fnList(currentPageNo){
+		var form = document.paramForm;
+		form.currentPageNo.value = currentPageNo;
+		form.action = "/intro/menu/10037/program/30005/plusSearchNewList.do";;
+		form.submit();
+	}
+
+	function fnSearchResultDetail(recKey, bookKey, publishFormCode){
+		var form = document.paramForm;
+		form.recKey.value = recKey;
+		form.bookKey.value = bookKey;
+		form.publishFormCode.value = publishFormCode;
+		form.action = "/intro/menu/10037/program/30005/plusSearchResultDetail.do";
+		form.submit();
+	}
+</script>
+</head>
+<body>
+<form id="paramForm" name="paramForm" method="get">
+	<input type="hidden" name="searchType" value="NEW">
+	<input type="hidden" name="searchCategory" value="ALL">
+	<input type="hidden" name="searchLibrary" value="MH">
+	<input type="hidden" name="searchRoom" value="">
+	<input type="hidden" name="searchKdc" value="8">
+	<input type="hidden" name="searchPeriod" value="3M">
+	<input type="hidden" name="searchSort" value="KEY">
+	<input type="hidden" name="searchOrder" value="DESC">
+	<input type="hidden" name="searchRecordCount" value="50">
+	<input type="hidden" name="currentPageNo" value="1">
+	<input type="hidden" name="viewStatus" value="IMAGE">
+	<input type="hidden" name="searchBookClass" value="GENERAL">
+	<input type="hidden" name="recKey">
+	<input type="hidden" name="bookKey">
+	<input type="hidden" name="publishFormCode">
+</form>
+<!-- skip -->
+<ul class="skip">
+	<li><a href="#contentcore">본문 바로가기</a></li>
+	<li><a href="#lnb">하위메뉴 바로가기</a></li>
+</ul>
+<!-- //skip -->
+<!-- wrap -->
+<div id="wrap">
+	
+
+
+<header id="header">
+	<a href="#back" id="blackBG"><span class="blind">이전으로 돌아가기</span></a>
+	
+
+<div id="snb">
+	<div class="siteUtilGroup">
+		<div id="libraryShortcut" class="libSite dropdown">
+			<a href="#open" class="button">도서관 바로가기</a>
+			<ul>
+				
+					
+				
+					
+						<li><a href="/ct/index.do" rel="nosublink">중앙도서관 </a></li>
+					
+				
+					
+						<li><a href="/gd/index.do" rel="nosublink">고등도서관</a></li>
+					
+				
+					
+						<li><a href="/gm/index.do" rel="nosublink">구미도서관</a></li>
+					
+				
+					
+						<li><a href="/ng/index.do" rel="nosublink">논골도서관</a></li>
+					
+				
+					
+						<li><a href="/mjg/index.do" rel="nosublink">무지개도서관</a></li>
+					
+				
+					
+						<li><a href="/bj/index.do" rel="nosublink">복정도서관</a></li>
+					
+				
+					
+						<li><a href="/bd/index.do" rel="nosublink">분당도서관 </a></li>
+					
+				
+					
+						<li><a href="/sh/index.do" rel="nosublink">서현도서관</a></li>
+					
+				
+					
+						<li><a href="/sn/index.do" rel="nosublink">수내도서관</a></li>
+					
+				
+					
+						<li><a href="/sj/index.do" rel="nosublink">수정도서관</a></li>
+					
+				
+					
+						<li><a href="/uj/index.do" rel="nosublink">운중도서관</a></li>
+					
+				
+					
+						<li><a href="/wr/index.do" rel="nosublink">위례도서관</a></li>
+					
+				
+					
+						<li><a href="/jw/index.do" rel="nosublink">중원도서관</a></li>
+					
+				
+					
+						<li><a href="/cjw/index.do" rel="nosublink">중원어린이도서관 </a></li>
+					
+				
+					
+						<li><a href="/bt/index.do" rel="nosublink">책테마파크도서관</a></li>
+					
+				
+					
+						<li><a href="/pg/index.do" rel="nosublink">판교도서관 </a></li>
+					
+				
+					
+						<li><a href="/cpg/index.do" rel="nosublink">판교어린이도서관 </a></li>
+					
+				
+					
+						<li><a href="/hor/index.do" rel="nosublink">해오름도서관</a></li>
+					
+				
+					
+						<li><a href="/small/index.do" rel="nosublink">작은도서관</a></li>
+					
+				
+			</ul>
+		</div>
+		<div id="siteMenu" class="siteMenu clearfix">
+			<ul>
+				
+						<li class="login"><a id="loginTop" name="loginTop" href="/intro/memberLogin.do?returnUrl=aHR0cHM6Ly9zbmxpYi5nby5rci9pbnRyby9tZW51LzEwMDM3L3Byb2dyYW0vMzAwMDUvcGx1c1NlYXJjaE5ld0xpc3QuZG8/c2VhcmNoVHlwZT1ORVcmc2VhcmNoS2RjPTgmc2VhcmNoQ2F0ZWdvcnk9QUxMJnNlYXJjaFNvcnQ9S0VZJnNlYXJjaE9yZGVyPURFU0MmY3VycmVudFBhZ2VObz0xJnNlYXJjaFBlcmlvZD0zTSZzZWFyY2hCb29rQ2xhc3M9R0VORVJBTCZzZWFyY2hMaWJyYXJ5PU1IJnNlYXJjaFJlY29yZENvdW50PTUwJnZpZXdTdGF0dXM9SU1BR0U=">로그인</a></li>
+						<li class="joinus"><a href="/intro/memberJoinIntro.do">회원가입</a></li>
+						<li class="joinus">
+							<a href="/intro/40020/contents.do">온라인정회원신청</a>
+						</li>
+					
+				<li class="sitemap"><a href="/intro/siteMap.do">사이트맵</a></li>
+			</ul>
+			<div id="langsShortcut" class="langs dropdown">
+				<a href="#lang" class="button">Language</a>
+<!-- 				<ul> -->
+<!-- 					<li><a href="/lang/eng/index.do" title="새창에서 열림" target="_blank">English</a></li> -->
+<!-- 					<li><a href="/lang/chn/index.do" title="새창에서 열림" target="_blank">中國語</a></li> -->
+<!-- 					<li><a href="/lang/jpn/index.do" title="새창에서 열림" target="_blank">日本語</a></li> -->
+<!-- 				</ul> -->
+				<script>
+					function googleTranslateElementInit() {
+						new google.translate.TranslateElement({pageLanguage: 'ko', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'langsShortcut');
+						$(".goog-te-gadget-simple").before('<p class="tit">Google Translate</p>');
+					}
+
+
+					$(document).ready(function(){
+						$(".langs .button").on("click", function(){
+							$(".goog-te-gadget").slideToggle(300);
+						});
+					});
+				</script>
+				<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(function(){
+		$(".dropdown > a").click(function(){
+			var $dropdownNav = $(this).siblings("ul");
+			if($dropdownNav.css("display") == "none"){
+				$(".dropdown > ul").hide();
+				$dropdownNav.show();
+			}else{
+				$dropdownNav.hide();
+			}
+			return false;
+		});
+		
+			
+					$("#gnb7").show();
+					$("#gnb8").hide();
+				
+		
+
+	});
+
+</script>
+
+
+	<div class="headerInner clearfix">
+		<!--<a href="https://www.snlib.go.kr/intro/menu/206692/contents/41803/contents.do" class="th50_logo"><img src="/include/image/common/50th_logo_new.gif" alt="성남시 50주년"></a>-->
+		<h1 id="logo"><a href="/intro/index.do"><img src="/include/image/common/logo.png" alt="성남시 도서관사업소" /></a></h1>
+		<a href="#open" id="mobileIndexOpen"><span class="blind">메뉴 열기</span></a>
+		
+
+<a href="#searchBoxOpen" id="btnSearchTop"><span class="blind">검색창열기</span></a>
+<form name="topSearchForm" id="topSearchForm" method="get">
+	<input type="hidden" name="searchType" value="SIMPLE">
+	<input type="hidden" name="searchCategory" value="BOOK">
+	<input type="hidden" name="searchKey" value="ALL">
+	
+			<input type="hidden" name="searchPbLibrary" value="ALL" />
+		
+	<fieldset>
+		<legend class="blind">검색 영역</legend>
+		<div id="searchBox" class="searchBoxWrap">
+			<div class="searchBox ">
+				<label for="topSearchType" class="blind">검색유형 선택</label>
+				<!--<select name="topSearchType" id="topSearchType" class="searchSelect">
+					<option value="BOOK" selected="selected">소장자료</option>
+					<option value="HOME" >홈페이지</option>
+				</select>-->
+				<div class="radiBox">
+					<span class="chk"><input type="radio" name="topSearchType" id="booksearch" value="BOOK" checked="checked"><label for="booksearch">소장자료</label></span>
+
+						<span class="chk"><input type="radio" name="topSearchType" id="homepage"><label for="homepage">홈페이지</label></span>
+
+				</div>
+				<div class="keywordInput">
+					<label for="topSearchKeyword" class="blind">검색어 입력</label>
+					<input type="text" title="검색어 입력" id="topSearchKeyword" name="searchKeyword" autocomplete="off" placeholder="검색어 입력">
+				</div>
+				<a href="#search" id="topSearchBtn" title="검색" class="btnSearch"><span class="blind">검색</span></a>
+			</div>
+			<div id="topPopularKeyword" class="keywordPop mobileHide">
+				
+
+
+<div class="controlArea">
+	<a href="#up" id="btnUp" title="인기검색어 위로 넘기기"><span class="blind">위</span></a>
+	<a href="#dwon" id="btnDwon" title="인기검색어 아래로 넘기기"><span class="blind">아래</span></a>
+</div>
+<div class="controlAreaOp2">
+	<a href="#pause" id="btnPause" title="인기검색어 정지"><span class="blind">정지</span></a>
+	<a href="#play" id="btnPlay" title="인기검색어 시작"><span class="blind">시작</span></a>
+</div>
+
+<ol class="keywordList">
+	
+		<li><a href="#link" onclick="javascript:fnTopSearchPopularWord('흔한남매'); return false;" title="흔한남매">흔한남매</a></li>
+	
+		<li><a href="#link" onclick="javascript:fnTopSearchPopularWord('혼모노'); return false;" title="혼모노">혼모노</a></li>
+	
+		<li><a href="#link" onclick="javascript:fnTopSearchPopularWord('에그박사'); return false;" title="에그박사">에그박사</a></li>
+	
+		<li><a href="#link" onclick="javascript:fnTopSearchPopularWord('가공범'); return false;" title="가공범">가공범</a></li>
+	
+		<li><a href="#link" onclick="javascript:fnTopSearchPopularWord('마법천자문'); return false;" title="마법천자문">마법천자문</a></li>
+	
+		<li><a href="#link" onclick="javascript:fnTopSearchPopularWord('야구'); return false;" title="야구">야구</a></li>
+	
+		<li><a href="#link" onclick="javascript:fnTopSearchPopularWord('종이접기'); return false;" title="종이접기">종이접기</a></li>
+	
+</ol>
+
+<script type="text/javascript">
+	$(document).ready(function(e) {
+
+		var keywordList = $('.keywordList').newsTicker({
+			itemHeight: 40,
+			showItems: 1,
+			duration: 4000,
+			prevButton: $('#btnDwon'),
+			nextButton: $('#btnUp'),
+			stopButton: $('#btnPause'),
+			startButton: $('#btnPlay')
+		});
+
+		$("#topSearchKeyword").keypress(function (e){
+			if((e.keyCode || e.which) == 13){
+				fnTopSearch();
+				e.preventDefault();
+			}
+		});
+		$("#topSearchBtn").click(fnTopSearch);
+
+		$("#btnPause").click(function(){
+			$(this).hide();
+			$("#btnPlay").attr("style","display:block");
+		});
+
+		$("#btnPlay").click(function() {
+			$(this).hide();
+			$("#btnPause").attr("style","display:block");
+		});
+	});
+
+	function fnTopSearchPopularWord(popularWord){
+		var form = document.topSearchForm;
+		form.searchKeyword.value = popularWord;
+		form.action="/intro/plusSearchResultList.do"
+		form.submit();
+	}
+</script>
+			</div>
+			
+		</div>
+	</fieldset>
+</form>
+
+<script type="text/javascript">
+	$(function(){
+		var $sel = $("#topSearchType");
+		var $searchBox = $(".searchBox");
+		$sel.change(function(){
+			if($(this).val() == "HOME") $searchBox.addClass("in");
+			else $searchBox.removeClass("in");
+			return false;
+		});
+
+		if("intro" != "intro"){
+			$("#topPopularKeyword").load("/intro/include/topPopularKeyword.do");
+		}
+	});
+
+	function fnTopSearch() {
+		var form = document.topSearchForm;
+		if(isEmpty(form.searchKeyword.value)){
+				alert("검색어를 입력하세요.")
+				form.searchKeyword.focus();
+				return false;
+		}
+
+		if (form.topSearchType.value == "BOOK"){
+			form.action="/intro/plusSearchResultList.do"
+		}else {
+			form.action="/intro/searchTotalResultList.do"
+		}
+
+		form.submit();
+	}
+</script>
+	</div>
+	<nav id="gnbNav">
+		<div id="mobileIndexClose"><a href="#close"><span class="blind">메뉴 닫기</span></a></div>
+		<ul id="gnb" class="clearfix"> 
+ <li id="gnb1"><a href="/intro/menu/10041/program/30009/plusSearchSimple.do">자료검색</a> 
+  <ul> 
+   <li><a href="/intro/menu/10041/program/30009/plusSearchSimple.do">통합자료검색</a> 
+    <ul class="MkSub"> 
+     <li><a href="/intro/menu/10041/program/30009/plusSearchSimple.do">간략검색</a> </li> 
+     <li><a href="/intro/menu/10042/program/30010/plusSearchDetail.do">상세검색</a> </li> 
+     <li><a href="/intro/menu/10043/contents/40007/contents.do">자료검색 도움말</a> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/10036/program/30004/plusSearchKdc.do">주제별검색</a> </li> 
+   <li><a href="/intro/menu/10037/program/30005/plusSearchNewList.do">신착자료검색</a> </li> 
+   <li><a href="/intro/menu/10038/program/30006/plusLoanBestList.do">대출베스트</a> </li> 
+   <li><a href="/intro/menu/12972/program/30144/aiBookAge.do">취향분석 추천도서</a> </li> 
+   <li><a href="/intro/menu/10039/program/30007/libraryPopularBookList.do">공공도서관인기도서</a> </li> 
+   <li><a href="/intro/menu/12714/program/30128/smartLibraryBookList.do">스마트도서관 검색</a> 
+    <ul class="MkTab"> 
+     <li><a href="/intro/menu/12714/program/30128/smartLibraryBookList.do">스마트도서관</a> </li> 
+    </ul> </li> 
+  </ul> </li> 
+ <li id="gnb2"><a href="/intro/menu/10011/contents/40012/contents.do">도서관안내</a> 
+  <ul> 
+   <li><a href="/intro/menu/10011/contents/40012/contents.do">인사말</a> </li> 
+   <li><a href="/intro/menu/10012/contents/40013/contents.do">연혁</a> </li> 
+   <li><a href="/intro/menu/10017/contents/40016/contents.do">성남시도서관 현황</a> 
+    <ul class="MkSub"> 
+     <li><a href="/intro/menu/10017/contents/40016/contents.do">공공도서관</a> </li> 
+     <li><a href="/intro/menu/10018/contents/40017/contents.do">작은도서관</a> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/10019/contents/40018/contents.do">조직/업무정보</a> 
+    <ul class="MkTab"> 
+     <li><a href="/intro/menu/10019/contents/40018/contents.do">조직도</a> </li> 
+     <li><a href="/intro/menu/10020/program/30002/staffList.do">업무정보</a> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/10015/contents/40014/contents.do">도서관서비스헌장</a> </li> 
+   <li><a href="/intro/menu/10016/contents/40097/contents.do">도서관법/조례</a> </li> 
+   <li><a href="/intro/menu/205568/contents/41301/contents.do">책이음안내</a> </li> 
+   <li><a href="/intro/menu/207172/bbs/21881/bbsPostList.do">큰글자 소식</a> 
+    <ul class="MkTab"> 
+     <li><a href="/intro/menu/207172/bbs/21881/bbsPostList.do">큰글자 소식지</a> </li> 
+    </ul> </li> 
+  </ul> </li> 
+ <li id="gnb3"><a href="/intro/menu/10021/contents/40019/contents.do">이용안내</a> 
+  <ul> 
+   <li><a href="/intro/menu/10021/contents/40019/contents.do">이용시간/휴관일</a> </li> 
+   <li><a href="/intro/menu/10022/contents/40020/contents.do">회원가입</a> </li> 
+   <li><a href="/intro/menu/10023/contents/40021/contents.do">도서대출/반납/예약</a> </li> 
+   <li><a href="/intro/menu/12865/contents/40001/contents.do">상호대차서비스</a> 
+    <ul class="MkTab"> 
+     <li><a href="/intro/menu/12865/contents/40001/contents.do">상호대차서비스</a> </li> 
+     <li><a href="/intro/menu/12866/contents/40381/contents.do">대학상호대차서비스</a> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/10028/contents/40003/contents.do">책배달서비스</a> 
+    <ul class="MkTab"> 
+     <li><a href="/intro/menu/10028/contents/40003/contents.do">책바다</a> </li> 
+     <li><a href="/intro/menu/10029/contents/40004/contents.do">내 생애 첫 도서관</a> </li> 
+     <li><a href="/intro/menu/10030/contents/40005/contents.do">두루두루</a> </li> 
+     <li><a href="/intro/menu/205707/contents/41012/contents.do">책나래</a> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/206007/contents/41520/contents.do">전자도서관</a> 
+    <ul class="MkSub"> 
+     <li><a href="/intro/menu/206007/contents/41520/contents.do">전자도서관 서비스</a> </li> 
+     <li><a href="/intro/menu/10031/contents/40008/contents.do">전자도서관 이용안내</a> 
+      <ul class="MkTab"> 
+       <li><a href="/intro/menu/10031/contents/40008/contents.do">전자책</a></li> 
+       <li><a href="/intro/menu/10032/contents/40009/contents.do">오디오북</a></li> 
+       <li><a href="/intro/menu/206971/contents/41980/contents.do">경기도사이버도서관</a></li> 
+       <li><a href="/intro/menu/10033/contents/40010/contents.do">DBpia</a></li> 
+       <li><a href="/intro/menu/206067/contents/41540/contents.do">KISS</a></li> 
+       <li><a href="/intro/menu/10034/contents/40011/contents.do">전자잡지</a></li> 
+       <li><a href="/intro/menu/206069/contents/41542/contents.do">어학강좌</a></li> 
+       <li><a href="/intro/menu/206068/contents/41541/contents.do">뮤직 라이브러리</a></li> 
+      </ul> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/10027/contents/40002/contents.do">모바일앱서비스</a> </li> 
+   <li><a href="/intro/menu/207039/contents/40900/contents.do">북스타트 사업</a> 
+    <ul class="MkTab"> 
+     <li><a href="/intro/menu/207039/contents/40900/contents.do">신청안내</a> </li> 
+     <li><a href="/intro/menu/207040/program/30209/bookStartApply.do">책꾸러미 신청하기</a> </li> 
+    </ul> </li> 
+  </ul> </li> 
+ <li id="gnb4"><a href="/intro/menu/10046/program/30012/calendar.do">문화마당</a> 
+  <ul> 
+   <li><a href="/intro/menu/10046/program/30012/calendar.do">도서관달력</a> </li> 
+   <li><a href="/intro/menu/10047/contents/41840/contents.do">수강신청</a> </li> 
+   <li><a href="/intro/menu/206169/contents/41600/contents.do">독서동아리</a> 
+    <ul class="MkSub"> 
+     <li><a href="/intro/menu/206169/contents/41600/contents.do">독서동아리소개</a> </li> 
+     <li><a href="/intro/menu/12698/program/30127/readingClubNewList.do">독서동아리등록및검색</a> </li> 
+     <li><a href="/intro/menu/206171/bbs/21721/bbsPostList.do">독서동아리게시판</a> 
+      <ul class="MkTab"> 
+       <li><a href="/intro/menu/206171/bbs/21721/bbsPostList.do">새소식</a></li> 
+       <li><a href="/intro/menu/206172/bbs/21722/bbsPostList.do">지원신청</a></li> 
+       <li><a href="/intro/menu/206173/bbs/21723/bbsPostList.do">활동공유</a></li> 
+      </ul> </li> 
+     <li><a href="/intro/menu/206174/bbs/21641/bbsPostList.do">독서동아리도움자료</a> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/207253/contents/42290/contents.do">글짓기 그림대회</a> 
+    <ul class="MkSub"> 
+     <li><a href="/intro/menu/207253/contents/42290/contents.do">대회안내</a> 
+      <ul class="MkTab"> 
+       <li><a href="/intro/menu/207253/contents/42290/contents.do">글짓기(독후감공모전)</a></li> 
+       <li><a href="/intro/menu/207254/contents/42291/contents.do">그림대회</a></li> 
+      </ul> </li> 
+     <li><a href="/intro/menu/207252/bbs/21941/bbsPostList.do">대회(독후감공모전) 신청</a> </li> 
+     <li><a href="/intro/menu/207192/bbs/21901/bbsPostList.do">대회스케치</a> </li> 
+     <li><a href="/intro/menu/207194/bbs/21902/bbsPostList.do">대회수상작</a> 
+      <ul class="MkTab"> 
+       <li><a href="/intro/menu/207194/bbs/21902/bbsPostList.do">글짓기</a></li> 
+       <li><a href="/intro/menu/207195/bbs/21903/bbsPostList.do">그림대회</a></li> 
+      </ul> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/207391/contents/42420/contents.do">책 읽는 광장 도서관</a> </li> 
+   <li><a href="/intro/menu/207471/bbs/22021/bbsPostList.do">프로그램 제안</a> </li> 
+  </ul> </li> 
+ <li id="gnb5"><a href="/intro/menu/10048/bbs/20001/bbsPostList.do">이용자마당</a> 
+  <ul> 
+   <li><a href="/intro/menu/10048/bbs/20001/bbsPostList.do">공지사항</a> </li> 
+   <li><a href="/intro/menu/10049/bbs/20002/bbsPostList.do">자주하는질문</a> </li> 
+   <li><a href="/intro/menu/207091/bbs/21861/bbsPostList.do">상호대차 FAQ</a> </li> 
+   <li><a href="/intro/menu/10052/contents/40023/contents.do">신청서비스</a> 
+    <ul class="MkSub"> 
+     <li><a href="/intro/menu/10052/contents/40023/contents.do">대관신청안내</a> </li> 
+     <li><a href="/intro/menu/10053/contents/40024/contents.do">견학신청안내</a> </li> 
+     <li><a href="/intro/menu/10054/contents/40025/contents.do">자원봉사신청안내</a> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/10051/program/30016/surveyList.do">설문조사</a> </li> 
+   <li><a href="/intro/menu/10044/contents/40022/contents.do">희망도서 신청</a> 
+    <ul class="MkTab"> 
+     <li><a href="/intro/menu/10044/contents/40022/contents.do">신청안내</a> </li> 
+     <li><a href="/intro/menu/10045/program/30011/hopeBookApply.do">신청하기</a> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/206871/contents/41900/contents.do">지역서점 바로대출 신청</a> </li> 
+   <li><a href="/intro/menu/12868/contents/40382/contents.do">학술기관 상호대차 신청</a> 
+    <ul class="MkTab"> 
+     <li><a href="/intro/menu/12868/contents/40382/contents.do">신청안내</a> </li> 
+     <li><a href="/intro/menu/12869/program/30140/universityLoanApply.do">신청하기</a> </li> 
+    </ul> </li> 
+  </ul> </li> 
+ <li id="gnb6"><a href="/intro/menu/10055/program/30017/mypage/myInfo.do">내서재</a> 
+  <ul> 
+   <li><a href="/intro/menu/10055/program/30017/mypage/myInfo.do">기본정보</a> </li> 
+   <li><a href="/intro/menu/10060/program/30019/mypage/loanStatusList.do">도서이용정보</a> 
+    <ul class="MkSub"> 
+     <li><a href="/intro/menu/10060/program/30019/mypage/loanStatusList.do">대출현황</a> </li> 
+     <li><a href="/intro/menu/10061/program/30020/mypage/reservationStatusList.do">예약현황</a> </li> 
+     <li><a href="/intro/menu/10062/program/30021/mypage/loanHistoryList.do">대출이력</a> </li> 
+     <li><a href="/intro/menu/10063/program/30022/mypage/bandLillStatusList.do">상호대차현황</a> </li> 
+     <li><a href="/intro/menu/12870/program/30140/mypage/universityLoanStatusList.do">대학상호대차현황</a> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/10057/program/30018/mypage/basketGroupMain.do">나만의책장(관심도서)</a> </li> 
+   <li><a href="/intro/menu/10065/program/30011/mypage/hopeBookList.do">나의신청정보</a> 
+    <ul class="MkSub"> 
+     <li><a href="/intro/menu/10065/program/30011/mypage/hopeBookList.do">희망자료신청조회</a> </li> 
+     <li><a href="/intro/menu/206696/program/30142/mypage/findSnApplyList.do">책 속의 보물 신청내역</a> </li> 
+     <li><a href="/intro/menu/207041/program/30209/mypage/bookStartApply.do">북스타트신청내역</a> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/206832/bbs/20009/mypage/bbsPostList.do">나의게시글</a> 
+    <ul class="MkSub"> 
+     <li><a href="/intro/menu/206832/bbs/20009/mypage/bbsPostList.do">묻고답하기</a> </li> 
+    </ul> </li> 
+   <li><a href="/intro/menu/10066/program/30023/mypage/myPopularBookList.do">도서추천서비스</a> 
+    <ul class="MkSub"> 
+     <li><a href="/intro/menu/10066/program/30023/mypage/myPopularBookList.do">공공도서관 인기도서</a> </li> 
+     <li><a href="/intro/menu/10067/program/30024/mypage/plusRecommendBookTopList.do">유형별 추천도서</a> </li> 
+     <li><a href="/intro/menu/12973/program/30145/mypage/aiBook.do">나만의 맞춤도서</a> </li> 
+     <li><a href="/intro/menu/12974/program/30146/mypage/customMyNewBookMain.do">나만의 신착도서</a> </li> 
+    </ul> </li> 
+  </ul> </li> 
+ <li id="gnb7"><a href="/intro/menu/10068/program/30025/memberLogin.do">회원정보</a> 
+  <ul> 
+   <li><a href="/intro/menu/10068/program/30025/memberLogin.do">로그인</a> </li> 
+   <li><a href="/intro/menu/10069/program/30026/memberFindId.do">아이디찾기</a> </li> 
+   <li><a href="/intro/menu/10070/program/30027/memberFindPwd.do">비밀번호재발급</a> </li> 
+   <li><a href="/intro/menu/10071/program/30030/memberJoinIntro.do">회원가입</a> </li> 
+  </ul> </li> 
+ <li id="gnb8"><a href="/intro/menu/10072/program/30031/mypage/memberModifyCheck.do">회원정보</a> 
+  <ul> 
+   <li><a href="/intro/menu/10072/program/30031/mypage/memberModifyCheck.do">회원정보수정</a> </li> 
+   <li><a href="/intro/menu/10073/program/30032/mypage/memberPwdModify.do">비밀번호변경</a> </li> 
+   <li><a href="/intro/menu/12697/program/30126/mypage/memberUntactRegularApply.do">온라인정회원신청</a> </li> 
+   <li><a href="/intro/menu/10074/program/30033/mypage/memberWithdraw.do">회원탈퇴</a> </li> 
+  </ul> </li> 
+ <li id="gnb9"><a href="/intro/menu/10075/program/30028/siteMap.do">홈페이지 이용안내</a> 
+  <ul> 
+   <li><a href="/intro/menu/10075/program/30028/siteMap.do">사이트맵</a> </li> 
+   <li><a href="/intro/menu/10076/contents/40026/contents.do">이용약관</a> </li> 
+   <li><a href="/intro/menu/10077/contents/40027/contents.do">개인정보처리방침</a> </li> 
+   <li><a href="/intro/menu/10078/contents/40028/contents.do">영상정보처리기기운영방침</a> </li> 
+   <li><a href="/intro/menu/10079/contents/40029/contents.do">이메일무단수집거부</a> </li> 
+   <li><a href="/intro/menu/10080/bbs/20081/bbsPostList.do">홈페이지오류신고</a> </li> 
+  </ul> </li> 
+ <li id="gnb10"><a href="/intro/menu/10010/program/30001/searchTotalResultList.do">홈페이지 통합검색</a> </li> 
+</ul>
+		
+				<div class="mobileQRcode"><p><a href="/intro/memberLogin.do">로그인을 하시면 모바일회원증을<br>확인하실 수 있습니다</a></p></div>
+			
+		<div class="btnTotal"><a href="#view" title="전체메뉴 보기"><span><span class="blind">전체메뉴</span></span></a></div>
+	</nav>
+	<div id="submenuArea"></div>
+</header>
+	<div id="container" class="sub">
+		<div class="contentGroup">
+			
+<div id="lnbNav" class="navArea">
+	<h2>주메뉴</h2>
+	<ul id="lnb" class="lnb"></ul>
+</div>
+
+			<div id="contentcore">
+				
+<div class="naviandtitle">
+	<h3>페이지타이틀</h3>
+	<div class="navi"></div>
+	<div class="snsFarm">
+		<ul class="btnArea clearfix">
+			<li><a href="#snsGroup" id="sns" title="SNS 공유하기" class="snsShare"><span class="blind">SNS 공유하기</span></a>
+				<div id="snsGroup" class="snsList clearfix">
+					<a href="#sns1" id="sns1" onclick="javascript:fnShareFaceBook('https://snlib.go.kr/intro/menu/10037/program/30005/plusSearchNewList.do?searchType=NEW&searchKdc=8&searchCategory=ALL&searchSort=KEY&searchOrder=DESC&currentPageNo=1&searchPeriod=3M&searchBookClass=GENERAL&searchLibrary=MH&searchRecordCount=50&viewStatus=IMAGE'); return false;" title="페이스북에 공유하기 새창열림" class="snsFacebook"><span class="blind">페이스북</span></a>
+					<a href="#sns2" id="sns2" onclick="javascript:fnShareTwitter('https://snlib.go.kr/intro/menu/10037/program/30005/plusSearchNewList.do?searchType=NEW&searchKdc=8&searchCategory=ALL&searchSort=KEY&searchOrder=DESC&currentPageNo=1&searchPeriod=3M&searchBookClass=GENERAL&searchLibrary=MH&searchRecordCount=50&viewStatus=IMAGE'); return false;" title="트위터에 공유하기 새창열림" class="snsTwitter"><span class="blind">트위터</span></a>
+				</div>
+			</li>
+			<li class="mobileHide"><a href="#print" id="pprint" title="인쇄" class="snsPrint" onclick="javascript:fnPrintPopup('intro'); return false;"><span class="blind">현재화면 프린트.</span></a></li>
+		</ul>
+	</div>
+</div>
+				<div id="contents" class="contentArea">
+					<!--Real Contents Start-->
+					<form id="searchForm" name="searchForm" method="post">
+						<input type="hidden" name="searchType" value="NEW">
+						<input type="hidden" name="searchCategory" value="ALL">
+						<input type="hidden" name="currentPageNo" value="1">
+						<input type="hidden" name="viewStatus" value="IMAGE">
+
+						<div class="newSearch mb20">
+							<div class="searchFormArea">
+								<div class="searchNewCore clearfix">
+									<select id="searchLibrary" name="searchLibrary" title="도서관 선택">
+										<option value="ALL" >전체도서관</option>
+										
+											<option value="MA" >중앙도서관</option>
+										
+											<option value="MD" >고등도서관</option>
+										
+											<option value="MG" >구미도서관</option>
+										
+											<option value="BF" >논골도서관</option>
+										
+											<option value="MM" >무지개도서관</option>
+										
+											<option value="MW" >복정도서관</option>
+										
+											<option value="MB" >분당도서관</option>
+										
+											<option value="MV" >서현도서관</option>
+										
+											<option value="MO" >수내도서관</option>
+										
+											<option value="MS" >수정도서관</option>
+										
+											<option value="MU" >운중도서관</option>
+										
+											<option value="MR" >위례도서관</option>
+										
+											<option value="MJ" >중원도서관</option>
+										
+											<option value="CK" >중원어린이도서관</option>
+										
+											<option value="MT" >책테마파크도서관</option>
+										
+											<option value="MP" >판교도서관</option>
+										
+											<option value="PK" >판교어린이도서관</option>
+										
+											<option value="MH" selected="selected">해오름도서관</option>
+										
+									</select>
+									<!--
+									<select id="searchRoom" name="searchRoom" title="자료실 선택">
+										<option value="ALL">전체자료실</option>
+									</select>
+									-->
+									
+									<select id="searchKdc" name="searchKdc" title="주제별선택">
+										<option value="ALL" selected="selected">전체주제</option>
+										
+											<option value="0" >총류</option>
+										
+											<option value="1" >철학</option>
+										
+											<option value="2" >종교</option>
+										
+											<option value="3" >사회과학</option>
+										
+											<option value="4" >자연과학</option>
+										
+											<option value="5" >기술과학</option>
+										
+											<option value="6" >예술</option>
+										
+											<option value="7" >언어</option>
+										
+											<option value="8" selected="selected">문학</option>
+										
+											<option value="9" >역사</option>
+										
+									</select>
+									<select id="searchPeriod" name="searchPeriod" title="기간선택">
+										
+											<option value="3M" selected="selected">3달 이내</option>
+										
+											<option value="1M" >1달 이내</option>
+										
+											<option value="3W" >3주 이내</option>
+										
+											<option value="2W" >2주 이내</option>
+										
+											<option value="1W" >1주 이내</option>
+										
+									</select>
+									<div class="btnSubmit"><a href="#btn" id="searchBtn" class="btn input themeBtn">검색</a></div>
+								</div>
+							</div>
+						</div>
+						<p class="rtitle">
+							<strong class="searchKwd themeColor">'2026.05.24 ~ 현재'</strong>에 대한 자료검색 결과이며, 총 <strong class="themeFC">429건</strong>이 검색되었습니다.
+						</p>
+						<!-- search result -->
+						<!-- tab area -->
+						
+
+
+					<div class="resultTop">
+						<div class="tabNav">
+							<div class="virtSelect"><a href="#script">탭메뉴</a></div>
+							<ul class="tnb clearfix">
+								
+									<li class="choiced"><a href="#link" onclick="javascript:fnSearchCategory('ALL'); return false;" class="current">전체(429)</a></li>
+								
+								<li ><a href="#link" onclick="javascript:fnSearchCategory('BOOK'); return false;" >단행본<span>(429)</span></a></li>
+								<li ><a href="#link" onclick="javascript:fnSearchCategory('SERIAL'); return false;" >연속간행물<span>(0)</span></a></li>
+
+								
+							</ul>
+						</div>
+					</div>
+
+						<!-- //tab area -->
+						<!-- result Filter -->
+						<div class="resultFilter clearfix">
+							<div class="sort">
+								<select name="searchSort" id="searchSort" class="resultSelect" title="정렬방식 선택">
+									<option value="SIMILAR" >정확도순</option>
+									<option value="KEY" selected="selected">등록일</option>
+									<option value="TITLE" >서명</option>
+									<option value="AUTHOR" >저자</option>
+									<option value="PUBLISHER" >발행자</option>
+									<option value="PUBLISHYEAR" >발행연도</option>
+								</select>
+								<select name="searchOrder" id="searchOrder" class="resultSelect" title="정렬순서 선택" >
+									<option value="DESC" selected="selected">내림차순</option>
+									<option value="ASC" >오름차순</option>
+								</select>
+								
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<select name="searchRecordCount" id="searchRecordCount" class="resultSelect" title="출력 건수 선택">
+	<option value="10" >10건</option>
+	<option value="20" >20건</option>
+	<option value="50" >30건</option>
+	<option value="40" >40건</option>
+	<option value="50" selected="selected">50건</option>
+</select>
+								<a href="#btn" id="sortBtn" class="btnGo">확인</a>
+							</div>
+							<p class="chkArea">
+								<label><input type="radio" name="searchBookClass" id="searchBookClassAll" value="ALL"  title="전체도서 보기"> 전체도서</label>
+								<label><input type="radio" name="searchBookClass" id="searchBookClassGeneral" value="GENERAL" checked="checked" title="일반도서 보기"> 일반도서</label>
+								<label><input type="radio" name="searchBookClass" id="searchBookClassChild" value="CHILD"  title="아동도서 보기"> 아동도서</label>
+								<a href="#btn" id="bookClassBtn" class="btn small">적용</a>
+							</p>
+							
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="mode">
+	<span class="btnToggle">
+		<a href="#btn" title="표지형으로 보기" id="imageViewBtn" class="btnTogImage choiced"><span>표지형</span></a>
+		<a href="#btn" title="목록형으로 보기" id="textViewBtn" class="btnTogText "><span>목록형</span></a>
+	</span>
+</div>
+						</div>
+						<!-- //result Filter -->
+
+						<!-- list head -->
+						
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="resultHead">
+	<div class="btnArea">
+		<span class="chk"><input type="checkbox" name="checkAll" id="checkAll" value="Y" title="전체 목록 선택"></span>
+		
+			
+				<a href="#btn"  id="addBasketGroupBatchBtn" class="button put focus">관심자료담기</a>
+			
+			
+		
+		<a href="#btn" id="exportTextBookBtn" class="button text mobileHide">텍스트목록저장</a>
+		<a href="#btn" id="exportExcelBookBtn" class="button xlsx mobileHide">엑셀목록저장</a>
+		
+			
+				<a href="/intro/basketGroupMain.do" class="button view">관심자료보기</a>
+			
+			
+		
+	</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		
+			
+				$("#addBasketGroupBatchBtn").click(fnBatchBasketGroupBookAdd);
+			
+			
+		
+		$("#exportTextBookBtn").click(fnExportTextBook);
+		$("#exportExcelBookBtn").click(fnExportExcelBook);
+		$("#checkAll").click(fnCheckAll);
+	});
+</script>
+
+						<!-- //list head -->
+
+						<!-- result list -->
+						
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="/include/booksearch/js/kolaseek_alpas.js"></script>
+
+<script type="text/javascript">
+function fnDooraeApplyPopLogin(manageCode, regNo){
+	if(isEmpty("")) {
+		alert("로그인 후 이용하시기 바랍니다.");
+		$("#loginTop").get(0).click();
+		return false;
+	}
+
+	var url = "/"+siteCd+"/doorae/dooraeLillApplyPop.do?manageCode=" + manageCode + "&regNo=" + regNo;
+	var objwin = window.open(url, "dooraeLillApplyPop", "resizable=no, status=no, scrollbars=yes, toolbar=no, menubar=no, width=600px, height=650px");
+	objwin.focus();
+}
+
+function fnSeriesInfo(manageCode, stCode, recKey, orderNo){
+	if ($("#seriesInfo"+orderNo).css("display") == "none") {
+		$("#seriesInfo"+orderNo).load("/search/include/seriesInfoList.do", {manageCode : manageCode, stCode : stCode, recKey : recKey});
+	}
+}
+</script>
+<ul class="resultList imageType">
+	
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">1.</span>
+					<span class="chk"><input type="checkbox" name="check" title="폭염 대피소 선택" value="1972062420^1972062422^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062420,1972062422,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6065521/60655218678.20260701071848.jpg" alt="폭염 대피소 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062420,1972062422,'BO'); return false;">
+								폭염 대피소
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 박지숙 , 김새벽 , 김민정 [공]지음</span>
+							<span>발행자: 다산책방:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅂ984ㄷ-1
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1972062422, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000816675</span>
+							
+								<span>ISBN: 9791130681870</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]종합자료실희망도서(신청자 우선대출)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출대기중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1972062420,1972062422,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">2.</span>
+					<span class="chk"><input type="checkbox" name="check" title="출근 인사= A hello to the day 선택" value="1972062399^1972062401^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062399,1972062401,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6055035/60550358439.20260623071220.jpg" alt="출근 인사= A hello to the day 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062399,1972062401,'BO'); return false;">
+								출근 인사= A hello to the day
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 유희경 지음</span>
+							<span>발행자: 핀드:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 814.7-ㅇ615ㅊ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1972062401, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000816668</span>
+							
+								<span>ISBN: 9791199801271</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]종합자료실희망도서(신청자 우선대출)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출대기중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1972062399,1972062401,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">3.</span>
+					<span class="chk"><input type="checkbox" name="check" title="개와 괴물의 시간 선택" value="1972062432^1972062435^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062432,1972062435,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F7243035%3Ftimestamp%3D20260625122421" alt="개와 괴물의 시간 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062432,1972062435,'BO'); return false;">
+								개와 괴물의 시간
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 마크 해던 지음 ; 박아람 옮김</span>
+							<span>발행자: 문학수첩</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 843.6-ㅎ4358ㄱ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1972062435, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000816679</span>
+							
+								<span>ISBN: 9791173830549</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]종합자료실희망도서(신청자 우선대출)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.09.05)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000816679','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1972062432,1972062435,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">4.</span>
+					<span class="chk"><input type="checkbox" name="check" title="어슬렁과 기웃거림 선택" value="1972062460^1972062463^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062460,1972062463,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F7246825%3Ftimestamp%3D20260626122125" alt="어슬렁과 기웃거림 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062460,1972062463,'BO'); return false;">
+								어슬렁과 기웃거림
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 이원 지음</span>
+							<span>발행자: 난다</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㅇ836ㅇ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1972062463, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000816688</span>
+							
+								<span>ISBN: 9791124065570</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]종합자료실희망도서(신청자 우선대출)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출대기중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1972062460,1972062463,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">5.</span>
+					<span class="chk"><input type="checkbox" name="check" title="태양 아래 올리브 선택" value="1972062467^1972062469^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062467,1972062469,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/39890/8/cover200/k512130727_1.jpg" alt="태양 아래 올리브 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062467,1972062469,'BO'); return false;">
+								태양 아래 올리브
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 김초엽 지음</span>
+							<span>발행자: 자이언트북스</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㄱ958ㅌ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1972062469, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000816690</span>
+							
+								<span>ISBN: 9791191824582</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]종합자료실희망도서(신청자 우선대출)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출대기중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1972062467,1972062469,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">6.</span>
+					<span class="chk"><input type="checkbox" name="check" title="빵충 사육 준수 사항 선택" value="1972062411^1972062413^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062411,1972062413,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/39872/66/cover200/k242130313_1.jpg" alt="빵충 사육 준수 사항 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062411,1972062413,'BO'); return false;">
+								빵충 사육 준수 사항
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 김혜영 지음</span>
+							<span>발행자: 안전가옥</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅇ222-48
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1972062413, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000816672</span>
+							
+								<span>ISBN: 9791194891178</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]종합자료실희망도서(신청자 우선대출)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출대기중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1972062411,1972062413,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">7.</span>
+					<span class="chk"><input type="checkbox" name="check" title="(난생처음) 번역 선택" value="1972062454^1972062456^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062454,1972062456,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F7249516%3Ftimestamp%3D20260701151545" alt="(난생처음) 번역 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062454,1972062456,'BO'); return false;">
+								(난생처음) 번역
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 이소담 지음</span>
+							<span>발행자: 티라미수더북:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㄴ47-9
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1972062456, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000816686</span>
+							
+								<span>ISBN: 9791175158702</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]종합자료실희망도서(신청자 우선대출)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출대기중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1972062454,1972062456,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">8.</span>
+					<span class="chk"><input type="checkbox" name="check" title="나는 나를 번역하기 시작했다 선택" value="1972062394^1972062396^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062394,1972062396,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F7256218%3Ftimestamp%3D20260719144848" alt="나는 나를 번역하기 시작했다 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1972062394,1972062396,'BO'); return false;">
+								나는 나를 번역하기 시작했다
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : Claire Kim 지음</span>
+							<span>발행자: 미다스북스</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㄱ9656ㄴ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1972062396, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000816667</span>
+							
+								<span>ISBN: 9791176820066</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]종합자료실희망도서(신청자 우선대출)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출대기중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1972062394,1972062396,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">9.</span>
+					<span class="chk"><input type="checkbox" name="check" title="꾸준함을 기르는 일 선택" value="1967753215^1971576279^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1967753215,1971576279,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_5977464/59774647154.20260425072242.jpg" alt="꾸준함을 기르는 일 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1967753215,1971576279,'BO'); return false;">
+								꾸준함을 기르는 일
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 수풀림 지음</span>
+							<span>발행자: 다산북스</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㅅ642ㄲ=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576279, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503531</span>
+							
+								<span>ISBN: 9791130676630</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp8">
+							대출가능[비치중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										
+										<a href="#btn" onclick="javascript:fnBandLillApplyPop('MH','HOM000503531'); return false;" class="state typeB" title="새창열림"><span class="ico"></span>상호대차신청</a>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1967753215,1971576279,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">10.</span>
+					<span class="chk"><input type="checkbox" name="check" title="어쩌다 마트 일을 시작하게 됐어요? 선택" value="1971576462^1971576464^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576462,1971576464,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/36751/71/cover200/k222030193_1.jpg" alt="어쩌다 마트 일을 시작하게 됐어요? 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576462,1971576464,'BO'); return false;">
+								어쩌다 마트 일을 시작하게 됐어요?
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 하현 지음</span>
+							<span>발행자: 위즈덤하우스</span>
+							
+								<span>발행연도: 2025</span>
+							
+							
+							<span>
+								청구기호: 818-ㅎ219어
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576464, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503591</span>
+							
+								<span>ISBN: 9791171714506</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp8">
+							대출가능[비치중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										
+										<a href="#btn" onclick="javascript:fnBandLillApplyPop('MH','HOM000503591'); return false;" class="state typeB" title="새창열림"><span class="ico"></span>상호대차신청</a>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576462,1971576464,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">11.</span>
+					<span class="chk"><input type="checkbox" name="check" title="엄마의 마음 선택" value="1971576468^1971576470^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576468,1971576470,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6008806/60088066145.20260519084613.jpg" alt="엄마의 마음 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576468,1971576470,'BO'); return false;">
+								엄마의 마음
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 김종원 지음</span>
+							<span>발행자: 퍼스트펭귄</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㄱ928ㅇ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576470, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503593</span>
+							
+								<span>ISBN: 9791199889316</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[상호대차중]</b>
+							<span>(예약 1명)</span>
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503593','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576468,1971576470,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">12.</span>
+					<span class="chk"><input type="checkbox" name="check" title="영혼의 왈츠. 2 선택" value="1969152253^1971576482^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969152253,1971576482,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6045614/60456148386.20260615201916.jpg" alt="영혼의 왈츠. 2 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969152253,1971576482,'BO'); return false;">
+								영혼의 왈츠. 2
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 베르나르 베르베르 [지음] , 전미연 옮김</span>
+							<span>발행자: 열린책들</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 863-ㅂ7745여-2=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576482, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503597</span>
+							
+								<span>ISBN: 9788932925790</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+							<dd class="series mt05">
+								<a href="#" onclick="fnSeriesInfo('MH', '9788932925776', '1969152253', '11');">시리즈 소장정보</a>
+								<div id="seriesInfo11" class="seriesInfo" style="display: none"></div>
+							</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 1명)</span>
+							(반납예정일: 2026.09.01)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503597','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1969152253,1971576482,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">13.</span>
+					<span class="chk"><input type="checkbox" name="check" title="예쁘게 말했을 뿐인데, 좋은 일들이 쏟아지기 시작했다 선택" value="1971576486^1971576488^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576486,1971576488,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_5933177/59331777908.20260331104308.jpg" alt="예쁘게 말했을 뿐인데, 좋은 일들이 쏟아지기 시작했다 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576486,1971576488,'BO'); return false;">
+								예쁘게 말했을 뿐인데, 좋은 일들이 쏟아지기 시작했다
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 김령아 지음</span>
+							<span>발행자: 스마트비즈니스</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 802.56-ㄱ719ㅇ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576488, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503599</span>
+							
+								<span>ISBN: 9791163430971</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.08.30)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503599','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576486,1971576488,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">14.</span>
+					<span class="chk"><input type="checkbox" name="check" title="예스터데이 선택" value="1971576489^1971576491^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576489,1971576491,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_3245418/32454187666.20221019132634.jpg" alt="예스터데이 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576489,1971576491,'BO'); return false;">
+								예스터데이
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 조영남 지음</span>
+							<span>발행자: 문학세계사</span>
+							
+								<span>발행연도: 2022</span>
+							
+							
+							<span>
+								청구기호: 818-ㅈ6445ㅇ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576491, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503600</span>
+							
+								<span>ISBN: 9788970755427</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp8">
+							대출가능[비치중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										
+										<a href="#btn" onclick="javascript:fnBandLillApplyPop('MH','HOM000503600'); return false;" class="state typeB" title="새창열림"><span class="ico"></span>상호대차신청</a>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576489,1971576491,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">15.</span>
+					<span class="chk"><input type="checkbox" name="check" title="정지선이 출발선이 될 때 선택" value="1971576549^1971576551^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576549,1971576551,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/39425/86/cover200/k712139393_1.jpg" alt="정지선이 출발선이 될 때 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576549,1971576551,'BO'); return false;">
+								정지선이 출발선이 될 때
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 장은교 지음</span>
+							<span>발행자: Turtleneck press:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㅈ176ㅈ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576551, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503619</span>
+							
+								<span>ISBN: 9791199349445</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp8">
+							대출가능[비치중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										
+										<a href="#btn" onclick="javascript:fnBandLillApplyPop('MH','HOM000503619'); return false;" class="state typeB" title="새창열림"><span class="ico"></span>상호대차신청</a>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576549,1971576551,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">16.</span>
+					<span class="chk"><input type="checkbox" name="check" title="좋은 것만, 오직 좋은 것만 선택" value="1937070271^1971576554^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1937070271,1971576554,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_5322549/53225490185.20250226094414.jpg" alt="좋은 것만, 오직 좋은 것만 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1937070271,1971576554,'BO'); return false;">
+								좋은 것만, 오직 좋은 것만
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 최대호 지음</span>
+							<span>발행자: 포레스트북스</span>
+							
+								<span>발행연도: 2025</span>
+							
+							
+							<span>
+								청구기호: 818-ㅊ374ㅈ=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576554, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503620</span>
+							
+								<span>ISBN: 9791194530084</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.09.06)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503620','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1937070271,1971576554,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">17.</span>
+					<span class="chk"><input type="checkbox" name="check" title="책 산책시키는 사람 선택" value="1969152308^1971576572^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969152308,1971576572,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6055035/60550358643.20260623071302.jpg" alt="책 산책시키는 사람 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969152308,1971576572,'BO'); return false;">
+								책 산책시키는 사람
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 쩜(신시연) 지음</span>
+							<span>발행자: 세미콜론</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㅉ998ㅊ=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576572, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503625</span>
+							
+								<span>ISBN: 9791124336533</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.08.28)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503625','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1969152308,1971576572,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">18.</span>
+					<span class="chk"><input type="checkbox" name="check" title="고양이가 우리를 지배한다면 선택" value="1971576259^1971576261^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576259,1971576261,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_5889079/58890797574.20260212091755.jpg" alt="고양이가 우리를 지배한다면 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576259,1971576261,'BO'); return false;">
+								고양이가 우리를 지배한다면
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 한정영 지음</span>
+							<span>발행자: 서해문집</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 808.9-ㅅ316-42
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576261, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503525</span>
+							
+								<span>ISBN: 9791194413899</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.09.01)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503525','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576259,1971576261,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">19.</span>
+					<span class="chk"><input type="checkbox" name="check" title="내사랑 케이크 선택" value="1971576283^1971576285^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576283,1971576285,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6005083/60050839767.20260516071735.jpg" alt="내사랑 케이크 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576283,1971576285,'BO'); return false;">
+								내사랑 케이크
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 이선경 지음</span>
+							<span>발행자: 별빛들</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㅇ758ㄴ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576285, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503533</span>
+							
+								<span>ISBN: 9791189885809</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp8">
+							대출가능[비치중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										
+										<a href="#btn" onclick="javascript:fnBandLillApplyPop('MH','HOM000503533'); return false;" class="state typeB" title="새창열림"><span class="ico"></span>상호대차신청</a>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576283,1971576285,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">20.</span>
+					<span class="chk"><input type="checkbox" name="check" title="너에게 이 계절을 보여 주고 싶어 선택" value="1971576286^1971576288^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576286,1971576288,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F7245143%3Ftimestamp%3D20260624122202" alt="너에게 이 계절을 보여 주고 싶어 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576286,1971576288,'BO'); return false;">
+								너에게 이 계절을 보여 주고 싶어
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 찌롱 글·그림</span>
+							<span>발행자: 부크럼</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㅉ9985ㄴ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576288, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503534</span>
+							
+								<span>ISBN: 9791162145760</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[상호대차중]</b>
+							<span>(예약 0명)</span>
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503534','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576286,1971576288,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">21.</span>
+					<span class="chk"><input type="checkbox" name="check" title="복숭아는 아직이다 선택" value="1971576368^1971576370^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576368,1971576370,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_5950767/59507679935.20260403092417.jpg" alt="복숭아는 아직이다 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576368,1971576370,'BO'); return false;">
+								복숭아는 아직이다
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 효정 지음</span>
+							<span>발행자: 필름:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㅎ819ㅂ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576370, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503560</span>
+							
+								<span>ISBN: 9791124468067</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.08.30)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503560','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576368,1971576370,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">22.</span>
+					<span class="chk"><input type="checkbox" name="check" title="젊은 베르테르의 슬픔 선택" value="1971576546^1971576548^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576546,1971576548,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F7019545%3Ftimestamp%3D20260708123824" alt="젊은 베르테르의 슬픔 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576546,1971576548,'BO'); return false;">
+								젊은 베르테르의 슬픔
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 요한 볼프강 폰 괴테 지음 ; 송영택 옮김</span>
+							<span>발행자: 문예</span>
+							
+								<span>발행연도: 2025</span>
+							
+							
+							<span>
+								청구기호: 808-ㅁ734-4-1
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576548, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503618</span>
+							
+								<span>ISBN: 9788931025750</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+							<dd class="series mt05">
+								<a href="#" onclick="fnSeriesInfo('MH', '9788931023657', '1971576546', '21');">시리즈 소장정보</a>
+								<div id="seriesInfo21" class="seriesInfo" style="display: none"></div>
+							</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.08.30)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503618','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576546,1971576548,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">23.</span>
+					<span class="chk"><input type="checkbox" name="check" title="할머니의 레시피 선택" value="1971576609^1971576611^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576609,1971576611,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6014554/60145541264.20260523071419.jpg" alt="할머니의 레시피 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576609,1971576611,'BO'); return false;">
+								할머니의 레시피
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 소피아 리(이세리) 지음 ; 고수현 옮김</span>
+							<span>발행자: 빈페이지</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 808.9-ㅂ992-3
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576611, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503638</span>
+							
+								<span>ISBN: 9791193873281</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.08.28)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503638','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576609,1971576611,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">24.</span>
+					<span class="chk"><input type="checkbox" name="check" title="호미 선택" value="1971576615^1971576617^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576615,1971576617,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/29455/74/cover/k662837037_1.jpg" alt="호미 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576615,1971576617,'BO'); return false;">
+								호미
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 박완서 지음</span>
+							<span>발행자: 열림원</span>
+							
+								<span>발행연도: 2022</span>
+							
+							
+							<span>
+								청구기호: 814.7-ㅂ398ㅎ3
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576617, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503640</span>
+							
+								<span>ISBN: 9791170400929</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.09.01)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503640','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576615,1971576617,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">25.</span>
+					<span class="chk"><input type="checkbox" name="check" title="흉담 선택" value="1964955270^1971576627^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1964955270,1971576627,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_5974765/59747656446.20260422082933.jpg" alt="흉담 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1964955270,1971576627,'BO'); return false;">
+								흉담
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 전건우 지음</span>
+							<span>발행자: 래빗홀</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅈ264ㅎ=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576627, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503643</span>
+							
+								<span>ISBN: 9791168343764</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 1명)</span>
+							(반납예정일: 2026.09.02)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503643','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1964955270,1971576627,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">26.</span>
+					<span class="chk"><input type="checkbox" name="check" title="드리머 선택" value="1971576310^1971576312^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576310,1971576312,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/36041/14/cover200/k442037745_1.jpg" alt="드리머 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576310,1971576312,'BO'); return false;">
+								드리머
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 모래 지음</span>
+							<span>발행자: Goble:</span>
+							
+								<span>발행연도: 2025</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅁ518ㄷ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576312, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503542</span>
+							
+								<span>ISBN: 9791159259258</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.08.28)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503542','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576310,1971576312,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">27.</span>
+					<span class="chk"><input type="checkbox" name="check" title="마음판매소 선택" value="1971576325^1971576327^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576325,1971576327,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F7240421%3Ftimestamp%3D20260701151404" alt="마음판매소 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576325,1971576327,'BO'); return false;">
+								마음판매소
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 양전형 지음</span>
+							<span>발행자: 좋은땅</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅇ289ㅁ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576327, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503547</span>
+							
+								<span>ISBN: 9791138861601</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.09.05)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503547','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576325,1971576327,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">28.</span>
+					<span class="chk"><input type="checkbox" name="check" title="이웃집의 탐스러움 선택" value="1971576516^1971576519^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576516,1971576519,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6020266/60202661577.20260529071848.jpg" alt="이웃집의 탐스러움 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576516,1971576519,'BO'); return false;">
+								이웃집의 탐스러움
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 정기현 지음</span>
+							<span>발행자: 북다:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅍ94ㅂ-2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576519, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503609</span>
+							
+								<span>ISBN: 9791170613954</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.08.30)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503609','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576516,1971576519,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">29.</span>
+					<span class="chk"><input type="checkbox" name="check" title="(2026) 소설, 한국을 말하다 선택" value="1971576220^1971576222^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576220,1971576222,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_5956321/59563210248.20260407093138.jpg" alt="(2026) 소설, 한국을 말하다 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576220,1971576222,'BO'); return false;">
+								(2026) 소설, 한국을 말하다
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 성해나 [외]지음</span>
+							<span>발행자: 은행나무</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅅ422ㅇ-2026
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576222, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503514</span>
+							
+								<span>ISBN: 9791167376398</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.08.28)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503514','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576220,1971576222,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">30.</span>
+					<span class="chk"><input type="checkbox" name="check" title="말은 운명을 데려온다 선택" value="1969152226^1971576330^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969152226,1971576330,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6027652/60276523216.20260603083924.jpg" alt="말은 운명을 데려온다 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969152226,1971576330,'BO'); return false;">
+								말은 운명을 데려온다
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 이하영 지음</span>
+							<span>발행자: 토네이도</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 802.5-ㅇ943ㅁ=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576330, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503548</span>
+							
+								<span>ISBN: 9791158513580</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.08.28)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503548','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1969152226,1971576330,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">31.</span>
+					<span class="chk"><input type="checkbox" name="check" title="매스커레이드 라이프 선택" value="1969152314^1971576336^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969152314,1971576336,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6058420/60584207994.20260624123726.jpg" alt="매스커레이드 라이프 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969152314,1971576336,'BO'); return false;">
+								매스커레이드 라이프
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 히가시노 게이고 [지음] , 김은모 옮김</span>
+							<span>발행자: 현대문학</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 833.6-ㅎ961매-5=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576336, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503550</span>
+							
+								<span>ISBN: 9791167903662</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 4명)</span>
+							(반납예정일: 2026.09.05)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503550','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1969152314,1971576336,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">32.</span>
+					<span class="chk"><input type="checkbox" name="check" title="아무도 미치지 않았다 선택" value="1970522020^1971576443^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1970522020,1971576443,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6067804/60678044089.20260701162153.jpg" alt="아무도 미치지 않았다 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1970522020,1971576443,'BO'); return false;">
+								아무도 미치지 않았다
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 편혜영 [외]지음</span>
+							<span>발행자: 창비</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅇ1415=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576443, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503584</span>
+							
+								<span>ISBN: 9788936439972</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 1명)</span>
+							(반납예정일: 2026.08.28)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503584','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1970522020,1971576443,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">33.</span>
+					<span class="chk"><input type="checkbox" name="check" title="윗집 부부 선택" value="1969651637^1971576509^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969651637,1971576509,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/39532/5/cover200/k602139634_1.jpg" alt="윗집 부부 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969651637,1971576509,'BO'); return false;">
+								윗집 부부
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 황보름 지음</span>
+							<span>발행자: 클레이하우스</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅎ747우=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576509, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503606</span>
+							
+								<span>ISBN: 9791193235966</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 5명)</span>
+							(반납예정일: 2026.09.02)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503606','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1969651637,1971576509,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">34.</span>
+					<span class="chk"><input type="checkbox" name="check" title="가장 좋은 시절 선택" value="1971576236^1971576238^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576236,1971576238,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6005531/60055314613.20260522072539.jpg" alt="가장 좋은 시절 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576236,1971576238,'BO'); return false;">
+								가장 좋은 시절
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 메이비 지음</span>
+							<span>발행자: 부크럼</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㅁ4385ㄱ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576238, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503519</span>
+							
+								<span>ISBN: 9791162145722</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.09.06)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503519','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576236,1971576238,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">35.</span>
+					<span class="chk"><input type="checkbox" name="check" title="시간의 감촉 선택" value="1968381711^1971576427^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1968381711,1971576427,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/39536/43/cover200/k182139749_1.jpg" alt="시간의 감촉 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1968381711,1971576427,'BO'); return false;">
+								시간의 감촉
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 은희경 지음</span>
+							<span>발행자: 문학동네</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅇ651시=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576427, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503579</span>
+							
+								<span>ISBN: 9791141617226</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 4명)</span>
+							(반납예정일: 2026.09.01)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503579','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1968381711,1971576427,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">36.</span>
+					<span class="chk"><input type="checkbox" name="check" title="파우사 선택" value="1971576594^1971576596^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576594,1971576596,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F7257107%3Ftimestamp%3D20260711144829" alt="파우사 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576594,1971576596,'BO'); return false;">
+								파우사
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 최윤석 지음</span>
+							<span>발행자: 팩토리나인</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅊ588ㅍ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576596, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503633</span>
+							
+								<span>ISBN: 9791124575055</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[상호대차중]</b>
+							<span>(예약 1명)</span>
+							(반납예정일: 2026.09.05)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503633','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576594,1971576596,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">37.</span>
+					<span class="chk"><input type="checkbox" name="check" title="계절은 서두르지 않는다 선택" value="1968381696^1971576244^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1968381696,1971576244,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6011780/60117806677.20260522091855.jpg" alt="계절은 서두르지 않는다 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1968381696,1971576244,'BO'); return false;">
+								계절은 서두르지 않는다
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 김산들 지음</span>
+							<span>발행자: RHK:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 818-ㄱ7556ㄱ=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576244, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503521</span>
+							
+								<span>ISBN: 9788925569468</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.09.03)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503521','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1968381696,1971576244,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">38.</span>
+					<span class="chk"><input type="checkbox" name="check" title="당신의 짐이 당신의 날개 선택" value="1971576298^1971576300^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576298,1971576300,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F7142170%3Ftimestamp%3D20260313130159" alt="당신의 짐이 당신의 날개 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576298,1971576300,'BO'); return false;">
+								당신의 짐이 당신의 날개
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 반칠환 지음</span>
+							<span>발행자: 지혜:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 811.709-ㅂ618ㄷ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576300, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503538</span>
+							
+								<span>ISBN: 9791157285990</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.08.30)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503538','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576298,1971576300,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">39.</span>
+					<span class="chk"><input type="checkbox" name="check" title="바다가 들리는 편의점. 5 선택" value="1969152293^1971576351^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969152293,1971576351,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6048756/60487561646.20260617144124.jpg" alt="바다가 들리는 편의점. 5 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969152293,1971576351,'BO'); return false;">
+								바다가 들리는 편의점. 5
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 마치다 소노코 지음 , 황국영 옮김</span>
+							<span>발행자: 모모:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 833.6-ㅁ318ㅂ-5=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576351, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503554</span>
+							
+								<span>ISBN: 9791175773240</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.09.01)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503554','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1969152293,1971576351,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">40.</span>
+					<span class="chk"><input type="checkbox" name="check" title="소녀 저격수. 2, 끝없는 저항 선택" value="1971576410^1971576412^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576410,1971576412,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6001240/60012403877.20260513071827.jpg" alt="소녀 저격수. 2, 끝없는 저항 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576410,1971576412,'BO'); return false;">
+								소녀 저격수. 2, 끝없는 저항
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 한정영 지음</span>
+							<span>발행자: 미래인:</span>
+							
+								<span>발행연도: 2024</span>
+							
+							
+							<span>
+								청구기호: 808.9-ㅊ258ㅁ-97
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576412, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503574</span>
+							
+								<span>ISBN: 9791124505014</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.09.01)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503574','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576410,1971576412,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">41.</span>
+					<span class="chk"><input type="checkbox" name="check" title="아버지들의 아버지. 1 선택" value="1971576444^1971576446^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576444,1971576446,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/39403/26/cover200/8932925755_1.jpg" alt="아버지들의 아버지. 1 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576444,1971576446,'BO'); return false;">
+								아버지들의 아버지. 1
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 베르나르 베르베르 지음 ; 이세욱 옮김</span>
+							<span>발행자: 열린책들</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 863-ㅂ774아4-1
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576446, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503585</span>
+							
+								<span>ISBN: 9788932925752</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+							<dd class="series mt05">
+								<a href="#" onclick="fnSeriesInfo('MH', '9788932925745', '1971576444', '40');">시리즈 소장정보</a>
+								<div id="seriesInfo40" class="seriesInfo" style="display: none"></div>
+							</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 1명)</span>
+							(반납예정일: 2026.08.30)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503585','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576444,1971576446,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">42.</span>
+					<span class="chk"><input type="checkbox" name="check" title="아코디언 선택" value="1968381794^1971576449^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1968381794,1971576449,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6041993/60419931459.20260612143521.jpg" alt="아코디언 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1968381794,1971576449,'BO'); return false;">
+								아코디언
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 천명관 지음</span>
+							<span>발행자: 창비</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅊ244아=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576449, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503586</span>
+							
+								<span>ISBN: 9788936439965</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 3명)</span>
+							(반납예정일: 2026.09.02)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503586','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1968381794,1971576449,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">43.</span>
+					<span class="chk"><input type="checkbox" name="check" title="우리 동네 흉가로 놀러 오세요 선택" value="1971211940^1971576503^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971211940,1971576503,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6050318/60503183714.20260623071208.jpg" alt="우리 동네 흉가로 놀러 오세요 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971211940,1971576503,'BO'); return false;">
+								우리 동네 흉가로 놀러 오세요
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 전건우 지음</span>
+							<span>발행자: Sigongsa:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅈ264우=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576503, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503604</span>
+							
+								<span>ISBN: 9791171259540</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[타관반납복귀중]</b>
+							<span>(예약 0명)</span>
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503604','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971211940,1971576503,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">44.</span>
+					<span class="chk"><input type="checkbox" name="check" title="인비인 선택" value="1968381812^1971576528^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1968381812,1971576528,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/39581/25/cover200/k692139247_2.jpg" alt="인비인 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1968381812,1971576528,'BO'); return false;">
+								인비인
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 성해나 지음</span>
+							<span>발행자: 한겨례</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅅ372ㅇ=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576528, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503612</span>
+							
+								<span>ISBN: 9791172134297</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 6명)</span>
+							(반납예정일: 2026.09.01)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1968381812,1971576528,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">45.</span>
+					<span class="chk"><input type="checkbox" name="check" title="일상주의자의 감각 선택" value="1970056115^1971576535^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1970056115,1971576535,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6050318/60503183747.20260618152417.jpg" alt="일상주의자의 감각 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1970056115,1971576535,'BO'); return false;">
+								일상주의자의 감각
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 김이나 [지음]</span>
+							<span>발행자: 이야기장수</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 814.7-ㄱ8775ㅇ=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576535, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503614</span>
+							
+								<span>ISBN: 9791194184638</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[상호대차중]</b>
+							<span>(예약 0명)</span>
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503614','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1970056115,1971576535,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">46.</span>
+					<span class="chk"><input type="checkbox" name="check" title="테오 선택" value="1971576582^1971576584^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576582,1971576584,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6055035/60550358682.20260623071214.jpg" alt="테오 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576582,1971576584,'BO'); return false;">
+								테오
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 앨런 레비 지음 ; 노지양 옮김</span>
+							<span>발행자: 오팬하우스</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 843.6-ㄹ376ㅌ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576584, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503629</span>
+							
+								<span>ISBN: 9791175772892</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[상호대차중]</b>
+							<span>(예약 6명)</span>
+							(반납예정일: 2026.09.02)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576582,1971576584,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">47.</span>
+					<span class="chk"><input type="checkbox" name="check" title="굴과 모래 선택" value="1971576268^1971576270^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576268,1971576270,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/39382/47/cover200/8936439952_1.jpg" alt="굴과 모래 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576268,1971576270,'BO'); return false;">
+								굴과 모래
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 주영하 지음</span>
+							<span>발행자: 창비</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 813.7-ㅈ796ㄱ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576270, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503528</span>
+							
+								<span>ISBN: 9788936439958</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.09.02)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503528','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576268,1971576270,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">48.</span>
+					<span class="chk"><input type="checkbox" name="check" title="그리고 강은 그녀를 끌어내린다 선택" value="1971576274^1971576276^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576274,1971576276,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://image.aladin.co.kr/product/39496/31/cover200/k982139519_1.jpg" alt="그리고 강은 그녀를 끌어내린다 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576274,1971576276,'BO'); return false;">
+								그리고 강은 그녀를 끌어내린다
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 윤지현 지음 ; 박지선 옮김</span>
+							<span>발행자: 휴머니스트</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 843.6-ㅇ642ㄱ
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576276, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503530</span>
+							
+								<span>ISBN: 9791170875246</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.09.03)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503530','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576274,1971576276,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">49.</span>
+					<span class="chk"><input type="checkbox" name="check" title="빵집에서는 수수께끼의 향기가 난다 선택" value="1969651667^1971576382^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969651667,1971576382,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6056770/60567709283.20260623192003.jpg" alt="빵집에서는 수수께끼의 향기가 난다 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1969651667,1971576382,'BO'); return false;">
+								빵집에서는 수수께끼의 향기가 난다
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 쓰치야 우사기 지음 , 이선희 옮김</span>
+							<span>발행자: arte:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 833.6-ㅈ554-1=2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576382, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503564</span>
+							
+								<span>ISBN: 9791176610346</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp8">
+							대출가능[비치중]</b>
+							
+							
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<span class="state typeA"><span class="ico"></span> 도서예약불가</span>
+										
+								
+								
+							
+						 	
+								
+										
+										<a href="#btn" onclick="javascript:fnBandLillApplyPop('MH','HOM000503564'); return false;" class="state typeB" title="새창열림"><span class="ico"></span>상호대차신청</a>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1969651667,1971576382,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+				
+						
+						
+						
+						
+					
+				<li>
+					<span class="num">50.</span>
+					<span class="chk"><input type="checkbox" name="check" title="연금술사 선택" value="1971576474^1971576476^BO"></span>
+					
+						<div class="thumb">
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576474,1971576476,'BO'); return false;" class="cover">
+								<em class="tag"><img src="/include/booksearch/image/kdc/tag8.png" alt="문학"></em>
+								<span class="img"><img class="bookCoverImg" src="https://shopping-phinf.pstatic.net/main_6064327/60643274995.20260630071142.jpg" alt="연금술사 표지"></span>
+							</a>
+						</div>
+					
+					<dl class="bookDataWrap">
+						<dt class="tit">
+							<span class="cate">도서</span>
+							<a href="#link" onclick="javascript:fnSearchResultDetail(1971576474,1971576476,'BO'); return false;">
+								연금술사
+							</a>
+						</dt>
+						<dd class="author">
+							<span>저자 : 파울로 코엘료 지음 ; 최정수 옮김</span>
+							<span>발행자: 북다:</span>
+							
+								<span>발행연도: 2026</span>
+							
+							
+							<span>
+								청구기호: 879-ㅋ532여2
+								
+									<a href="#btn" onclick="javascript:fnCallNoPrintPop('intro', 1971576476, 'BO', 'LABEL'); return false;" title="새창열림" class="button print mobileHide">위치출력</a>
+								
+							</span>
+						</dd>
+						<!--
+						<dd class="data">
+							<span>등록번호: HOM000503595</span>
+							
+								<span>ISBN: 9791170614029</span>
+							
+							
+						</dd>
+						-->
+						<dd class="site">
+							<span>도서관: 해오름도서관</span>
+							<span>자료실: [해오름]제1종합자료실(2층)</span>
+							
+							
+								<span>부록: 없음</span>
+							
+						</dd>
+						
+						
+					</dl>
+					<div class="bookStateBar clearfix">
+						<p class="txt">
+							<b class="emp1">
+							대출불가[대출중]</b>
+							<span>(예약 0명)</span>
+							(반납예정일: 2026.08.30)
+						</p>
+						<div class="stateArea">
+							
+								
+									
+											<a href="#btn" onclick="javascript:fnLoanReservationApplyProc('HOM','HOM000503595','MH','BO'); return false;" class="state typeA"><span class="ico"></span> 도서예약신청</a>
+										
+								
+								
+							
+						 	
+								
+										<span class="state typeB"><span class="ico"></span> 상호대차불가</span>
+									
+							
+							
+							
+							
+							
+								
+									<a href="#btn" onclick="javascript:fnBasketGroupBookAdd(1971576474,1971576476,'BO'); return false;" class="state typeC"><span class="ico"></span> 관심도서담기</a>
+								
+								
+							
+						</div>
+					</div>
+				</li>
+			
+		
+</ul>
+
+<script>
+	$(function(){
+
+		$('.state.typeC').on("click",function(){
+			$('.state.typeC').removeClass('focus');
+			$(this).addClass('focus');
+
+		});
+
+		/* 시리즈 소장정보 */
+		let $this = $(".series > a");
+
+		$this.on("click", function() {
+			$(this).toggleClass("active");
+			$(this).next('div').slideToggle();
+			return false;
+		});
+
+	});
+</script>
+						<!-- //result list -->
+					</form>
+					<!-- 페이징 -->
+					<div class="pagingWrap">
+						<p class="paging"><span class="current">1</span>
+<a href="javascript:fnList(2);">2</a>
+<a href="javascript:fnList(3);">3</a>
+<a href="javascript:fnList(4);">4</a>
+<a href="javascript:fnList(5);">5</a>
+<a href="javascript:fnList(6);">6</a>
+<a href="javascript:fnList(7);">7</a>
+<a href="javascript:fnList(8);">8</a>
+<a href="javascript:fnList(9);">9</a>
+
+</p>
+					</div>
+					<!-- //페이징 -->
+
+					<!-- End Of the Real Contents-->
+					
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- //container -->
+	<!-- 관심도서그룹 자료 추가 레이어팝업 -->
+	<div id="basketGroupBookAdd"></div>
+	<!-- //관심도서그룹 자료 추가 레이어팝업 -->
+	
+
+<!-- footer -->
+<footer id="footer" class="public">
+	<div class="footerInner clearfix">
+		<ul class="fnb clearfix">
+			
+					<li><a href="/intro/40027/contents.do">개인정보처리방침</a></li>
+				
+			
+					<li class="mobileHide"><a href="/intro/40028/contents.do">영상정보처리기기운영&middot;관리방침</a></li>
+				
+			<li class="mobileHide"><a href="/intro/40026/contents.do" >이용약관</a></li>
+			<li class="mobileHide"><a href="/intro/40029/contents.do">이메일무단수집거부</a></li>
+			
+			
+				<li><a href="/intro/20081/bbsPostList.do">홈페이지오류신고</a></li>
+			
+		</ul>
+		<div class="familySite">
+			<select name="relateSite" id="relateSite" title="유관기관 바로가기 선택">
+				<option value="" selected="selected">유관기관 바로가기</option>
+				<option value="https://www.seongnam.go.kr/main.do">성남시청</option>
+				<option value="https://www.sujeong-gu.go.kr/main/index.asp">수정구청</option>
+				<option value="https://www.jungwongu.go.kr:10008/main/index.asp">중원구청</option>
+				<option value="https://www.bundang-gu.go.kr:10009/main/index.asp">분당구청</option>
+				<option value="https://learning.seongnam.go.kr/index.do">평생학습포털 배움숲</option>
+				
+			</select>
+			<a href="#go" id="btnRelateSite" class="btnGo" title="새 창 열림">GO</a>
+		</div>
+		<div class="fAdd">
+		  
+			<address>(우)13514  경기도 성남시 분당구 판교로 546(야탑동)  &emsp;<span class="tel">Tel. 031-729-4500</span> &emsp;<span class="fax"> Fax. 031-729-4629</span></address>
+			
+			<cite>Copyright &copy; 성남시도서관사업소. All Rights Reserved.</cite>
+		</div>
+		
+				<div class="mark_wa">
+					<!-- <a href="http://www.webwatch.or.kr/Situation/WA_Situation.html?MenuCD=110" title="새창에서 열림" target="_blank"><img src="/include/image/common/mark_wa.png" alt="과학기술정보통신부 WEB ACCESSIBILITY(웹접근성인증마크)" /></a> -->
+										<a href="http://www.webwatch.or.kr/Situation/WA_Situation.html?page=1&skey=1&sval=성남시&npp=9&MenuCD=110" title="새창에서 열림" target="_blank"><img src="/include/image/common/mark_wa.png" alt="과학기술정보통신부 WEB ACCESSIBILITY(웹접근성인증마크)" /></a>
+
+				</div>
+			
+	</div>
+	<div><p id="post-result"></p></div>
+</footer>
+<a href="#body" id="btnTopScroll" title="상단으로 이동"><img src="/include/image/button/btn_top.png" alt="TOP"></a>
+<!-- //footer -->
+
+<script type="text/javascript">
+		$(function(){
+			$("#btnRelateSite").click(function(){
+				var url = $("#relateSite").val();
+				if(!$("#relateSite").val()){
+						alert("관련기관을 선택하세요.");
+						$("#relateSite").focus();
+				}else{
+						window.open(url,"_blank");
+				}
+				return false;
+			});
+			$("#btnTopScroll").click(function(){
+				$("body,html").animate({scrollTop:0},300);
+				return false;
+			});
+			$(window).scroll(function(){
+				var scT = $(this).scrollTop();
+				if (scT > 1) {
+						$("#btnTopScroll").css("display","block");
+				}else {
+						$("#btnTopScroll").css("display","none");
+				}
+			});
+
+			const siteCd = "intro";
+			$("body").addClass(siteCd);
+		});
+
+
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129102307-1"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		  gtag('config', 'UA-129102307-1');
+		</script>
+	
+
+<iframe name="hiddenFrame" id="hiddenFrame" title="빈프레임" class="blind"></iframe>
+
+</div>
+<!-- //wrap -->
+</body>
+</html>
