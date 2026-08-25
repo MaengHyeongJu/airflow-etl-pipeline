@@ -40,8 +40,10 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$DATAMART_DB_NAME"
         author          TEXT,
         isbn            TEXT,
         call_number     TEXT,
+        library_name    TEXT,
         matched_genre   TEXT NOT NULL,
         category_path   TEXT NOT NULL,
+        description     TEXT,
         checked_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
         PRIMARY KEY (scan_date, rec_key, book_key)
     );

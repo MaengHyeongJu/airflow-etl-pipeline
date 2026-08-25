@@ -68,6 +68,14 @@ def extract_category_paths(item: dict) -> list[str]:
     return paths
 
 
+def extract_description(item: dict, max_length: int = 300) -> str | None:
+    desc = (item or {}).get("description")
+    if not desc:
+        return None
+    desc = " ".join(desc.split())  # 개행/중복 공백 정리
+    return desc if len(desc) <= max_length else desc[: max_length - 1].rstrip() + "…"
+
+
 def classify_genre(item: dict) -> tuple[str, str] | None:
     """Return (genre, matched_category_path) if the item's category paths
     contain an SF/추리 keyword, else None."""
@@ -95,7 +103,14 @@ def find_genre_matches(
             result = classify_genre(item)
             if result:
                 genre, path = result
-                matches.append(GenreMatch(book=book, matched_genre=genre, category_path=path))
+                matches.append(
+                    GenreMatch(
+                        book=book,
+                        matched_genre=genre,
+                        category_path=path,
+                        description=extract_description(item),
+                    )
+                )
         time.sleep(delay_seconds)
 
     return matches

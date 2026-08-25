@@ -12,20 +12,24 @@ CONN_ID = "datamart_postgres"
 STAGING_DIR = "/opt/airflow/data/staging/library"
 
 
-def scrape_to_staging(ds: str, library: str, kdc: str, period: str, book_class: str) -> str:
+def scrape_to_staging(ds: str, libraries: list[str], kdc: str, period: str, book_class: str) -> str:
     from library_scanner.snlib_client import SearchFilters, fetch_all_new_arrivals
 
-    filters = SearchFilters(library=library, kdc=kdc, period=period, book_class=book_class)
-    books = fetch_all_new_arrivals(filters)
+    all_books = []
+    for library in libraries:
+        filters = SearchFilters(library=library, kdc=kdc, period=period, book_class=book_class)
+        books = fetch_all_new_arrivals(filters)
+        logger.info("scrape_to_staging ds=%s library=%s books=%d", ds, library, len(books))
+        all_books.extend(books)
 
     from pathlib import Path
 
     out_path = f"{STAGING_DIR}/dt={ds}/scan.json"
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
-        json.dump([b.__dict__ for b in books], f, ensure_ascii=False)
+        json.dump([b.__dict__ for b in all_books], f, ensure_ascii=False)
 
-    logger.info("scrape_to_staging ds=%s library=%s books=%d -> %s", ds, library, len(books), out_path)
+    logger.info("scrape_to_staging ds=%s total_books=%d -> %s", ds, len(all_books), out_path)
     return out_path
 
 
@@ -115,7 +119,7 @@ def classify_and_load_matches(ds: str, ttbkey: str | None) -> int:
     if matches:
         match_rows = [
             (ds, m.book.rec_key, m.book.book_key, m.book.title, m.book.author, m.book.isbn,
-             m.book.call_number, m.matched_genre, m.category_path)
+             m.book.call_number, m.book.library, m.matched_genre, m.category_path, m.description)
             for m in matches
         ]
         hook.insert_rows(
@@ -123,7 +127,7 @@ def classify_and_load_matches(ds: str, ttbkey: str | None) -> int:
             rows=match_rows,
             target_fields=[
                 "scan_date", "rec_key", "book_key", "title", "author", "isbn",
-                "call_number", "matched_genre", "category_path",
+                "call_number", "library_name", "matched_genre", "category_path", "description",
             ],
         )
 
@@ -131,7 +135,11 @@ def classify_and_load_matches(ds: str, ttbkey: str | None) -> int:
         "classify_and_load_matches ds=%s candidates=%d matches=%d", ds, len(candidates), len(matches)
     )
     for m in matches:
-        logger.info("  [%s] %s / %s (%s)", m.matched_genre, m.book.title, m.book.author, m.category_path)
+        logger.info(
+            "  [%s] %s / %s (%s) - %s: %s",
+            m.matched_genre, m.book.title, m.book.author, m.book.library,
+            m.category_path, m.description or "(줄거리 정보 없음)",
+        )
     return len(matches)
 
 
@@ -149,10 +157,10 @@ def write_text_report(ds: str) -> str:
     hook = PostgresHook(postgres_conn_id=CONN_ID)
     rows = hook.get_records(
         """
-        SELECT matched_genre, title, author, call_number, isbn, category_path
+        SELECT matched_genre, title, author, library_name, call_number, isbn, category_path, description
         FROM library.genre_matches
         WHERE scan_date = %(ds)s
-        ORDER BY matched_genre, title
+        ORDER BY library_name, matched_genre, title
         """,
         parameters={"ds": ds},
     )
@@ -161,15 +169,16 @@ def write_text_report(ds: str) -> str:
     mystery_count = sum(1 for r in rows if r[0] == "MYSTERY")
 
     lines = [
-        f"성남 해오름도서관 신착 SF/추리 대출가능 도서 ({ds} 스캔)",
+        f"성남도서관 신착 SF/추리 대출가능 도서 ({ds} 스캔)",
         "=" * 60,
         f"총 {len(rows)}건 (SF {sf_count} / 추리·스릴러 {mystery_count})",
         "",
     ]
-    for genre, title, author, call_number, isbn, category_path in rows:
+    for genre, title, author, library_name, call_number, isbn, category_path, description in rows:
         lines.append(f"[{genre}] {title} / {author or '-'}")
-        lines.append(f"    청구기호: {call_number or '-'} | ISBN: {isbn or '-'}")
+        lines.append(f"    도서관: {library_name} | 청구기호: {call_number or '-'} | ISBN: {isbn or '-'}")
         lines.append(f"    카테고리: {category_path}")
+        lines.append(f"    줄거리: {description or '(정보 없음)'}")
         lines.append("")
 
     if not rows:

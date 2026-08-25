@@ -37,6 +37,7 @@ class GenreMatch:
     book: NewArrivalBook
     matched_genre: str  # "SF" | "MYSTERY"
     category_path: str
+    description: str | None = None  # 알라딘 상품설명(줄거리) 요약
     source: str = "aladin"
 
 
